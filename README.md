@@ -41,7 +41,7 @@ PennyTracker is a simple and intuitive expense tracking app that helps you manag
 
 ---
 
-## 🌍 Live URLs
+## 🌍 Live URLs (sadly no longer available, as this project was once hosted on AWS during the DevOps bootcamp @ Ironhack)
 - **App:** [PennyTracker](http://gui.redirectme.net) 🖥️
 - **Grafana Dashboard:** [Monitoring](http://grafana.redirectme.net) 📊
 
