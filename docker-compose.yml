@@ -1,0 +1,78 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8706:8706"
+    environment:
+      PORT: 8706
+      DATABASE_URI: "mongodb://root:example@mongodb:27017/"
+      REDIS_HOST: "redis"
+      REDIS_PASSWORD: "someredispassword"
+    depends_on:
+      - mongodb
+      - redis
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: "http://172.20.0.10:8706"  # Backend service URL
+
+  mongodb:
+    image: mongo:latest  # Use the official MongoDB image
+    ports:
+      - "27017:27017"  # Expose MongoDB port
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongo-data:/data/db  # Persist MongoDB data
+
+  redis:
+    image: redis:latest  # Use the official Redis image
+    ports:
+      - "6379:6379"  # Expose Redis port
+    command: ["redis-server", "--requirepass", "someredispassword"]
+    volumes:
+      - redis-data:/data  # Persist Redis data
+
+#  eks:
+#    image: amazon/aws-cli
+#    environment:
+#      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+#      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+#    command: >
+#      eksctl create cluster --name gui --region eu-north-1 --managed
+#
+#  kubectl:
+#    image: bitnami/kubectl
+#    environment:
+#      KUBECONFIG: "/config/kubeconfig"
+#      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+#      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+#    volumes:
+#      - ./k8s:/k8s
+#    command: >
+#      "kubectl apply -f /k8s"
+
+#  kubectl:
+#    image: bitnami/kubectl  # Use an official kubectl image
+#    volumes:
+#      - ./k8s:/k8s
+#    entrypoint: >
+#      /bin/sh -c "
+#        sleep 60; 
+#        kubectl apply -f /k8s --validate=false
+#      "
+#    depends_on:
+#      - backend
+#      - frontend
+#      - mongodb
+#      - redis
+
+volumes:
+  mongo-data:
+  redis-data:
